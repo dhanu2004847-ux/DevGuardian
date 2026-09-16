@@ -22,6 +22,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    // CRITICAL: Bypass JWT filtering entirely for authentication and static asset routes
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/auth/") ||
+                path.equals("/") ||
+                path.equals("/index.html") ||
+                path.startsWith("/css/") ||
+                path.startsWith("/js/");
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
